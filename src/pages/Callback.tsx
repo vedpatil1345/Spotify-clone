@@ -1,30 +1,31 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { spotifyApi } from '../lib/spotify';
-import { useAuthStore } from '../store/useAuthStore';
+import { getTokenFromUrl } from '../lib/spotify/auth';
+import { useAuthStore } from '../lib/store';
+import { getCurrentUser } from '../lib/spotify/api';
 
-export function Callback() {
+export default function Callback() {
   const navigate = useNavigate();
-  const setIsAuthenticated = useAuthStore(state => state.setIsAuthenticated);
+  const { setToken, setUser } = useAuthStore();
 
   useEffect(() => {
-    const handleCallback = async () => {
-      try {
-        await spotifyApi.authenticate();
-        setIsAuthenticated(true);
-        navigate('/');
-      } catch (error) {
-        console.error('Authentication failed:', error);
-        navigate('/login');
-      }
-    };
-
-    handleCallback();
-  }, [navigate, setIsAuthenticated]);
+    const token = getTokenFromUrl();
+    if (token) {
+      setToken(token);
+      getCurrentUser(token)
+        .then(user => {
+          setUser(user);
+          navigate('/');
+        })
+        .catch(() => navigate('/login'));
+    } else {
+      navigate('/login');
+    }
+  }, [navigate, setToken, setUser]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+    <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+      <div className="text-white">Connecting to Spotify...</div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 {
-  "name": "spotify-clone",
+  "name": "metunes",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,11 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@spotify/web-api-ts-sdk": "^1.2.0",
+    "@types/spotify-web-playback-sdk": "^0.1.19",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.22.2",
+    "react-router-dom": "^6.22.3",
     "zustand": "^4.5.2"
   },
   "devDependencies": {
